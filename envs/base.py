@@ -15,6 +15,7 @@ class Env(ABC):
         self.tool_manager = TOOL_MANAGER_REGISTRY[tool_manager_name](verl_config=config)
         self.max_prompt_length = config.get('max_prompt_length', 2048)
         self.use_verify_tool = False
+        self.use_process_reward=config.get('use_process_reward', False)
         
     def verify_tool(self, data_source, solution_str, ground_truth, extra_info):
         # If you need a tool to evaluate the generated response, you need to modify the following code
@@ -83,7 +84,7 @@ class Env(ABC):
         
         return next_obs, dones, valid_action, is_tool
 
-    def compute_score(self, reward_rollout_wg, reward_tokenizer, tokenizer, data: DataProto, if_val=False):
+    def compute_score(self, reward_rollout_wg, reward_tokenizer, tokenizer, data: DataProto, if_val=False,use_process_reward=False):
         if reward_rollout_wg is not None:
             scores = self._compute_score_with_reward_rollout_wg(reward_rollout_wg, reward_tokenizer, data)
         else:
