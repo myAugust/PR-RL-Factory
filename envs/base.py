@@ -97,14 +97,13 @@ class Env(ABC):
             scores = self._compute_score_with_reward_rollout_wg(reward_rollout_wg, reward_tokenizer, data)
         else:
             score = self._compute_score_with_rules(data, tokenizer, if_val=if_val)
-            if use_process_reward:
+            if use_process_reward and not if_val:
                 scores = []
                 for i in range(len(data)):
                     data_item = data[i]
                     tool_use_score = data_item.batch['tool_use_scores']
                     validate_score = tool_use_score[ ~ torch.isnan(tool_use_score)].tolist()
-                    scores.append(validate_score)
-                    scores[i].append(score[i][0])
+                    scores.append(validate_score + score[i])
             else:
                 scores = score
         
