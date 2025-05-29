@@ -77,7 +77,7 @@ class ToolUtils:
         if self.env_object.use_process_reward:
             step_scores = self.env_object.get_step_reward(responses=responses_str)
         else:
-             step_scores = [0] * len(responses_str)
+            step_scores = [0] * len(responses_str)
 
         # encode infos for next prompt
         info_tokens = self.tokenizer(infos_str).input_ids
