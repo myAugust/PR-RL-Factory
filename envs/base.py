@@ -50,6 +50,10 @@ class Env(ABC):
             'data_source': data_source,
             'extra_info': extra_info
         }
+    
+    def get_step_reward(self, responses,format_score=0.1):
+        step_reward = [0]
+        return step_reward
 
     def step(self, responses, tokenizer):
         cur_actions, tool_results = self.tool_manager.execute_actions(responses=responses)
@@ -81,14 +85,26 @@ class Env(ABC):
             dones.append(temp_done)
             valid_action.append(temp_valid_action)
             is_tool.append(temp_is_tool)
+
+        step_reward = self.get_step_reward(responses)
         
-        return next_obs, dones, valid_action, is_tool
+        return next_obs, dones, step_reward
 
     def compute_score(self, reward_rollout_wg, reward_tokenizer, tokenizer, data: DataProto, if_val=False,use_process_reward=False):
         if reward_rollout_wg is not None:
             scores = self._compute_score_with_reward_rollout_wg(reward_rollout_wg, reward_tokenizer, data)
         else:
-            scores = self._compute_score_with_rules(data, tokenizer, if_val=if_val)
+            score = self._compute_score_with_rules(data, tokenizer, if_val=if_val)
+            if use_process_reward:
+                scores = []
+                for i in range(len(data)):
+                    data_item = data[i]
+                    tool_use_score = data_item.batch['tool_use_scores']
+                    validate_score = tool_use_score[ ~ torch.isnan(tool_use_score)].tolist()
+                    scores.append(validate_score)
+                    scores[i].append(score[i][0])
+            else:
+                scores=score
         
         return scores
     

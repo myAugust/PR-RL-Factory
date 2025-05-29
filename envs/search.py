@@ -18,40 +18,17 @@ class SearchEnv(Env):
             if temp_action == 'answer':
                 step_reward.append(torch.nan)
             else:
-                if temp_tool_list[0]['name']=='<empty>':
-                    step_reward.append(-0.05)
+                if temp_tool_list[0]['name'] == '<empty>':
+                    step_reward.append(-0.5 * format_score)
                 else:
-                    fail_number=0
+                    fail_number = 0
                     for i in range(len(temp_tool_list )):
-                        if temp_tool_list[i]['name']=='<error>':
-                            fail_number+=1
-                    step_rew=((len(temp_tool_list)-2*fail_number)/len(temp_tool_list))*format_score
+                        if temp_tool_list[i]['name'] == '<error>':
+                            fail_number += 1
+                    step_rew = ((len(temp_tool_list) - 2 *fail_number) / len(temp_tool_list)) * format_score
                     step_reward.append(step_rew)
+
         return step_reward
-
-    def step(self, responses, tokenizer):
-        next_obs, dones,_ , _= super().step(responses, tokenizer)
-        step_reward = self.get_step_reward(responses)
-        return next_obs, dones, step_reward
-    
-
-    def compute_score(self, reward_rollout_wg, reward_tokenizer, tokenizer, data: DataProto, if_val=False,use_process_reward=False):
-        if reward_rollout_wg is not None:
-            scores = self._compute_score_with_reward_rollout_wg(reward_rollout_wg, reward_tokenizer, data)
-        else:
-            score = self._compute_score_with_rules(data, tokenizer, if_val=if_val)
-            if use_process_reward:
-                scores = []
-                for i in range(len(data)):
-                    data_item = data[i]
-                    tool_use_score=data_item.batch['tool_use_scores']
-                    validate_score =tool_use_score[~torch.isnan(tool_use_score)].tolist()
-                    scores.append(validate_score)
-                    scores[i].append(score[i][0])
-            else:
-                scores=score
-
-        return scores
 
     # NOTE: Add your reward calculation rules here!
     def _compute_score_with_rules(self, data, tokenizer, if_val=False):
