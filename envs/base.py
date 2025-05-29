@@ -15,7 +15,7 @@ class Env(ABC):
         self.tool_manager = TOOL_MANAGER_REGISTRY[tool_manager_name](verl_config=config)
         self.max_prompt_length = config.get('max_prompt_length', 2048)
         self.use_verify_tool = False
-        self.use_process_reward=config.get('use_process_reward', False)
+        self.use_process_reward = config.get('use_process_reward', False)
         
     def verify_tool(self, data_source, solution_str, ground_truth, extra_info):
         # If you need a tool to evaluate the generated response, you need to modify the following code
@@ -51,8 +51,10 @@ class Env(ABC):
             'extra_info': extra_info
         }
     
-    def get_step_reward(self, responses,format_score=0.1):
-        step_reward = [0]
+    def get_step_reward(self, responses, format_score=0.1):
+        
+        step_reward = [1] * len(responses)
+    
         return step_reward
 
     def step(self, responses, tokenizer):
@@ -86,11 +88,11 @@ class Env(ABC):
             valid_action.append(temp_valid_action)
             is_tool.append(temp_is_tool)
 
-        step_reward = self.get_step_reward(responses)
         
-        return next_obs, dones, step_reward
+        return next_obs, dones, valid_action, is_tool
+    
 
-    def compute_score(self, reward_rollout_wg, reward_tokenizer, tokenizer, data: DataProto, if_val=False,use_process_reward=False):
+    def compute_score(self, reward_rollout_wg, reward_tokenizer, tokenizer, data: DataProto, if_val=False, use_process_reward=False):
         if reward_rollout_wg is not None:
             scores = self._compute_score_with_reward_rollout_wg(reward_rollout_wg, reward_tokenizer, data)
         else:
@@ -104,7 +106,7 @@ class Env(ABC):
                     scores.append(validate_score)
                     scores[i].append(score[i][0])
             else:
-                scores=score
+                scores = score
         
         return scores
     

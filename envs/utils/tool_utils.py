@@ -12,8 +12,8 @@ class ToolUtils:
         self.final_str = config.stop[-1] if config.stop else ''
         self.config_prompt_length = config.prompt_length
         self.config_response_length = config.response_length
-        self.stop_id=self.tokenizer.encode(config.stop[0], add_special_tokens=False)[0]
-        self.max_turns=config.max_turns
+        self.stop_id = self.tokenizer.encode(config.stop[0], add_special_tokens=False)[0]
+        self.max_turns = config.max_turns
         self.max_prompt_length = config.prompt_length
 
         self.pad_token_id = meta_info.get('pad_token_id')
@@ -69,9 +69,16 @@ class ToolUtils:
             skip_special_tokens=False,
         )
 
-        infos_str, dones, step_scores = self.env_object.step(
+        infos_str, dones, _, _  = self.env_object.step(
             responses=responses_str, tokenizer=self.tokenizer
         )
+
+        #if not use_process_reward will be 0
+        if self.env_object.use_process_reward:
+            step_scores = self.env_object.get_step_reward(responses=responses_str)
+        else:
+             step_scores = [0] * len(responses_str)
+
         # encode infos for next prompt
         info_tokens = self.tokenizer(infos_str).input_ids
         next_prompt_token = []

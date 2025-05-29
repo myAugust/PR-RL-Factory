@@ -11,8 +11,9 @@ class SearchEnv(Env):
         super().__init__(config)
         self.use_verify_tool = False
 
-    def get_step_reward(self, responses,format_score=0.1):
+    def get_step_reward(self, responses, format_score=0.1):
         step_reward = []
+    
         for response in responses:
             temp_action, temp_tool_list = self.tool_manager.parse_response(response_content=response)
             if temp_action == 'answer':
@@ -27,6 +28,7 @@ class SearchEnv(Env):
                             fail_number += 1
                     step_rew = ((len(temp_tool_list) - 2 *fail_number) / len(temp_tool_list)) * format_score
                     step_reward.append(step_rew)
+       
 
         return step_reward
 
