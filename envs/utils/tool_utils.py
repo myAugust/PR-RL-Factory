@@ -320,7 +320,8 @@ class ToolUtils:
                 'attention_mask': attention_mask,
                 'position_ids': position_ids,
                 'loss_mask': loss_mask,
-                'tool_use_scores': tool_use_score
+                'tool_use_scores': tool_use_score,
+                'tool_use_times': tool_use_times
             },
             batch_size=self.batch_size,
         )  
