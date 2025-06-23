@@ -63,7 +63,7 @@ For **future progression**, we will continue to prioritize **"easy"** and **"eff
   ```
 - **Install Requirements**
   ```bash
-  pip3 install accelerate bitsandbytes datasets deepspeed==0.16.4 einops flash-attn==2.7.0.post2 isort jsonlines loralib optimum packaging peft pynvml>=12.0.0 ray[default]==2.46.0 tensorboard torch torchmetrics tqdm transformers==4.51.3 transformers_stream_generator wandb wheel
+  pip3 install accelerate bitsandbytes datasets deepspeed==0.16.4 einops flash-attn==2.7.0.post2 isort jsonlines loralib optimum packaging peft pynvml>=12.0.0 ray[default]==2.46.0 tensorboard torch==2.6.0 torchmetrics tqdm transformers==4.51.3 transformers_stream_generator wandb wheel
   pip3 install vllm==0.8.5      # Mainly for Qwen3 model support
   pip3 install "qwen-agent[code_interpreter]"
   pip3 install llama_index bs4 pymilvus infinity_client codetiming tensordict==0.6 omegaconf torchdata==0.10.0 hydra-core easydict dill python-multipart mcp
@@ -80,6 +80,11 @@ For **future progression**, we will continue to prioritize **"easy"** and **"eff
   ```bash
   # Before running, modify MODEL_PATH, REWARD_MODEL_PATH, and several actor_rollout_ref.env parameters as needed
   bash main_grpo.sh
+  ```
+- **Evaluate or Infer Command**
+  ```bash
+  # Before running, modify MODEL_PATH, REWARD_MODEL_PATH, and several data and trainer parameters as needed
+  bash main_eval.sh
   ```
 
 
@@ -116,7 +121,7 @@ We welcome all users and developers to contribute code to RLFactory. If you have
 2. Contact us via email at chaijiajun@meituan.com or gjyin@outlook.com.
 3. Join our WeChat group and become a pioneer in Agent training!
 <div align="center">
-  <img src="https://github.com/user-attachments/assets/68e827a5-5929-4f2d-9e2f-06158448e2b0" alt="Description" style="width:200px; height:auto;"/>
+  <img src="https://github.com/user-attachments/assets/398696f3-52e5-4ecf-add1-224afcd073e2" alt="Description" style="width:200px; height:auto;"/>
   <img src="https://github.com/user-attachments/assets/e59f1a14-faee-4ec8-97cd-5e90ff34a43d" alt="Description" style="width:200px; height:auto;"/>
 </div>
 
